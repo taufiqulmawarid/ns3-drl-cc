@@ -191,23 +191,23 @@ void PccCustomRateController::MonitorIntervalFinished(const MonitorInterval& mi)
 
     // Linear Reward Function
     // double reward = 3*1e3 * (throughput / conf_mean_bw - latency_s / (conf_rtt_s * 1.5) - 6 * loss);
-    // double reward = 3*1e3 * (throughput / conf_mean_bw - latency_s / (conf_rtt_s * 2) - 6 * loss);
+    double reward = 3*1e3 * (throughput / conf_mean_bw - latency_s / (conf_rtt_s * 2) - 6 * loss);
 
     // Exponential Reward Function
     // double reward = 3*1e3 * (throughput / conf_mean_bw - exp(latency_s/conf_rtt_s - 2) - exp(loss - 0.05) + 1);
 
     // Boolean Reward Function
-    double reward = throughput / conf_mean_bw;
-    double scaled_latency = latency_s/(conf_rtt_s * 2);
-    if (scaled_latency >= 1.0)
-    {
-        reward -= scaled_latency;
-    }
-    double scaled_loss = loss / 0.05;
-    if (scaled_loss >= 1.0)
-    {
-        reward -= scaled_loss;
-    }
+    // double reward = throughput / conf_mean_bw;
+    // double scaled_latency = latency_s/(conf_rtt_s * 2);
+    // if (scaled_latency >= 1.0)
+    // {
+    //     reward -= scaled_latency;
+    // }
+    // double scaled_loss = loss / 0.05;
+    // if (scaled_loss >= 1.0)
+    // {
+    //     reward -= scaled_loss;
+    // }
 
     // Safety Net
     if (throughput == 0.) // Avoid send nothing as a good option

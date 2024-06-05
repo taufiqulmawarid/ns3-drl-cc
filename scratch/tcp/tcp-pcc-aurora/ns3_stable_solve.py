@@ -72,6 +72,7 @@ if __name__ == "__main__":
     gamma = float(args.gamma)
     model_name = str(args.tf_model_name)
     sb_model_name = str(args.sb_model_name)
+    sb_model_file_name = sb_model_name
     conductTest = bool(args.test)
     if arch_str == "":
         arch = []
@@ -119,11 +120,24 @@ if __name__ == "__main__":
         print(f">> Load SB Model... {sb_model_name}")
         PPO1.load(sb_model_name, env)
 
+    # Check if current_iteration/{sb_model_name} exists
+    initial_iteration = 0
+    if os.path.exists(f"./current_iteration/{sb_model_file_name}"):
+        with open(f"./current_iteration/{sb_model_file_name}", "r") as f:
+            initial_iteration = int(f.read())
+    
     # Train the model
-    for i in range(0, iterationNum):
+    for i in range(initial_iteration, iterationNum):
+        print(f">> Training iteration {i+1}...")
+        # Write to current_itereation file the current iteration number
+        with open(f"./current_iteration/{sb_model_file_name}", "w") as f:
+            f.write(str(i))
         model.learn(total_timesteps=(8192))
         print(f">> Save SB Model... {sb_model_name}")
         model.save(sb_model_name)
+    
+    with open(f"./current_iteration/{sb_model_file_name}", "w") as f:
+        f.write(str(iterationNum))
 
     # Test the trained model
     if conductTest:
